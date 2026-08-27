@@ -48,6 +48,13 @@ New chart shapes go in `figkit/charts.py`, new annotators in
 `figkit/annotate.py`, exported from `figkit/__init__.py`, with an example added
 under `examples/` and a row in the API table in README.
 
+## Upstream submodule
+
+`third_party/figures4papers` is a git submodule (not vendored — it has no
+license file). Fetch with `git submodule update --init --recursive`. Load its
+helper module through `fk.load_upstream()`, never by hardcoding a path. Do not
+copy files out of it into this repo.
+
 ## Example data is synthetic
 
 Everything under `examples/` and `data/` is invented. Do not commit real

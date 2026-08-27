@@ -65,6 +65,7 @@ from .sizing import (
     report,
     set_layout,
 )
+from .upstream import find_upstream, load_upstream, upstream_root
 from .style import (
     PRESETS,
     REL,
@@ -97,4 +98,6 @@ __all__ = [
     "headroom", "panel_titles", "legend_below", "patch_handles", "reference_line",
     # io
     "save", "set_output_dir", "output_dirs", "quiet", "finalize_figure",
+    # upstream bridge
+    "load_upstream", "find_upstream", "upstream_root",
 ]

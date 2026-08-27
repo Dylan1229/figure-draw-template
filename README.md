@@ -23,6 +23,7 @@ wide and the column is 3.3.
 - [API reference](#api-reference)
 - [Using it in your paper repo](#using-it-in-your-paper-repo)
 - [Repository layout](#repository-layout)
+- [Upstream: figures4papers](#upstream-figures4papers)
 - [Working with an AI assistant](#working-with-an-ai-assistant)
 - [FAQ](#faq)
 - [Credits](#credits)
@@ -32,7 +33,7 @@ wide and the column is 3.3.
 ## Quick start
 
 ```bash
-git clone <this-repo> && cd figure-draw-template
+git clone --recurse-submodules <this-repo> && cd figure-draw-template
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
@@ -465,6 +466,14 @@ Import once: `import figkit as fk`.
 | `fk.set_output_dir(out, preview)` | Point at your paper's `figures/`. |
 | `fk.quiet()` | Silence the report. |
 
+### Upstream bridge
+
+| Call | What it does |
+|---|---|
+| `fk.load_upstream()` | Import `scientific_figure_pro` from the `figures4papers` submodule. |
+| `fk.find_upstream()` | Path to that module, or `None` if this revision lacks it. |
+| `fk.upstream_root()` | Path to the submodule checkout. |
+
 ---
 
 ## Using it in your paper repo
@@ -506,6 +515,7 @@ figkit/                  the library (~1400 lines, nothing beyond matplotlib + n
                          scaling_lines, heatmap, mirror_bars, side_table
   annotate.py            speedup, cascade, total_arrow, bar_labels, headroom, ...
   io.py                  save() -> pdf + preview png + readability report
+  upstream.py            bridge to the figures4papers submodule
 examples/                nine worked figures; copy the closest one
                          (each carries a META block + a `# >>> data` block)
 templates/new_figure.py  the blank you actually start from (`make new NAME=...`)
@@ -518,8 +528,52 @@ docs/
   TROUBLESHOOTING.md     the failure modes you will actually hit
   gallery/               the PNGs this README links to (regenerate: make gallery)
 skills/paper-figure/     instructions for an AI assistant working in this repo
+third_party/
+  figures4papers/        git submodule: the upstream style repo (not vendored)
 out/                     generated; gitignored
 ```
+
+---
+
+## Upstream: figures4papers
+
+The house style grew out of
+[ChenLiu-1996/figures4papers](https://github.com/ChenLiu-1996/figures4papers).
+That repository is included here as a git submodule rather than copied — it
+ships no license file, so its code stays where its author published it:
+
+```bash
+git submodule update --init --recursive     # after cloning
+```
+
+What you get in `third_party/figures4papers/`:
+
+- **`scientific-figure-making/`** — the current skill: design theory, an API
+  reference, common patterns, tutorials. This is the prose behind many of
+  figkit's defaults; worth reading once.
+- **`figure_*/`** — one directory per paper, each a standalone plotting script.
+  A good hunting ground when you need a shape figkit does not have yet.
+- **`skills/scientific-figure-pro/scripts/scientific_figure_pro.py`** — the
+  original helper module (`make_grouped_bar`, `make_trend`, `make_heatmap`,
+  `make_sphere_illustration`, …), present up to revision `58628f6`; later
+  revisions restructured it away.
+
+The two libraries mix freely — they set the same global rcParams and draw on
+plain matplotlib axes:
+
+```python
+import figkit as fk
+sfp = fk.load_upstream()          # finds it in the submodule, or tells you how to get it
+
+fk.apply_style("paper")           # figkit sets the style
+fig, ax = plt.subplots(figsize=(9, 4))
+sfp.make_sphere_illustration(ax)  # upstream draws
+fk.save(fig, "illustration")      # figkit saves
+```
+
+figkit also keeps `apply_publication_style` and `finalize_figure` as aliases, so
+scripts written directly against `scientific_figure_pro` run unchanged. To move
+the submodule to the latest upstream revision: `git submodule update --remote`.
 
 ---
 
@@ -578,14 +632,17 @@ Illustrator, Figma, or TikZ. This is for anything driven by measurements.
 
 ## Credits
 
-The style conventions build on
+The house style — sans-serif with bold labels, minimal spines, frameless
+legends, the `apply_publication_style` / `finalize_figure` workflow — builds on
 [ChenLiu-1996/figures4papers](https://github.com/ChenLiu-1996/figures4papers)
-(Chen Liu, Yale) and its `scientific-figure-pro` skill, which is where the
-semantic-palette idea and the `apply_publication_style` / `finalize_figure`
-workflow come from. `figkit` keeps both of those names as aliases so scripts
-written against that module port over unchanged.
+(Chen Liu, Yale) and its scientific-figure skill, included here as a submodule.
+`figkit` keeps both of those function names as aliases so scripts written
+against that module port over unchanged.
 
-The chart shapes and annotation vocabulary are generalized from the evaluation
-sections of systems papers. All data in `examples/` is synthetic.
+The `RICE` semantic role palette, the page-aware sizing model (`plan`,
+`effective_pt`), the speedup/cascade annotation vocabulary, and the chart
+builders in `figkit.charts` are this repository's own.
+
+All data under `examples/` and `data/` is synthetic.
 
 MIT licensed — see [LICENSE](LICENSE).

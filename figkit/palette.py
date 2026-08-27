@@ -14,6 +14,9 @@ import matplotlib.colors as mcolors
 # --------------------------------------------------------------------------
 # Primary semantic palette (the "RICE" scheme used across our papers).
 # Pick colors by ROLE, never by "the next color in the list".
+#
+# These five roles are this repository's own; the surrounding house style comes
+# from figures4papers (see third_party/, and figkit.upstream).
 # --------------------------------------------------------------------------
 RICE: Final[dict[str, str]] = {
     "ours":           "#0A509E",  # deep blue    - the proposed system / full method

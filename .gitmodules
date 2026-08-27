@@ -1,0 +1,3 @@
+[submodule "third_party/figures4papers"]
+	path = third_party/figures4papers
+	url = https://github.com/ChenLiu-1996/figures4papers.git
