@@ -1,0 +1,12 @@
+{
+  "_comment": "Example of keeping data out of the plotting code. Load with json.load() at the top of a figure script; the script then contains only layout decisions. All values are synthetic.",
+  "units": {"latency": "seconds"},
+  "Model-A": {
+    "4K tok":  {"1": 488, "2": 251, "4": 129},
+    "16K tok": {"1": 1622, "2": 795, "4": 447, "8": 302}
+  },
+  "Model-B": {
+    "4K tok":  {"1": 872, "2": 451, "4": 233},
+    "16K tok": {"1": 2480, "2": 1310, "4": 762, "8": 498}
+  }
+}

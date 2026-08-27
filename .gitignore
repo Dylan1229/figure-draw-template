@@ -1,0 +1,15 @@
+# Generated figures. Regenerate with `make figures`.
+out/
+*.pdf
+!docs/**/*.pdf
+
+# Previews live in docs/gallery/ (committed) -- everything else is scratch.
+*.png
+!docs/gallery/*.png
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+.DS_Store
